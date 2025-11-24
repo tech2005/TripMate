@@ -1,0 +1,67 @@
+<% layout('layouts/boilerplate') %>
+<%= success %>
+
+<h3 class="mb-3 text-center">All Listings</h3>
+
+<!-- Button to Create a New Listing -->
+<form method="GET" action="/listings/new" class="text-center mb-4">
+  <button class="btn btn-primary">Create New Listing</button>
+</form>
+
+<!-- Listings Grid -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3">
+
+  <% if (allListings && allListings.length > 0) { %>
+
+    <% allListings.forEach(listing => { %>
+
+      <div class="col">
+        <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm border-0 listing-card">
+
+            <!-- Image -->
+            <img 
+              src="<%= listing.image && listing.image.url ? listing.image.url : 'https://via.placeholder.com/400x300?text=No+Image' %>" 
+              class="card-img-top"
+              alt="listing_image"
+              style="height: 20rem; object-fit: cover; border-top-left-radius: 10px; border-top-right-radius: 10px;"
+            >
+
+            <!-- Card Body -->
+            <div class="card-body">
+              <p class="card-text mb-1">
+                <b><%= listing.title || 'Untitled Listing' %></b><br>
+                ₹ <%= listing.price ? listing.price.toLocaleString("en-IN") : 'N/A' %> / night
+              </p>
+
+              <p class="mb-1">
+                <strong>Location:</strong> <%= listing.location || 'Unknown' %>
+              </p>
+
+              <p class="mb-0">
+                <strong>Country:</strong> <%= listing.country || 'Not specified' %>
+              </p>
+            </div>
+
+          </div>
+        </a>
+      </div>
+
+    <% }) %>
+
+  <% } else { %>
+
+    <!-- No Listings Case -->
+    <div class="text-center mt-5">
+      <h5>No listings found. Create one to get started!</h5>
+    </div>
+
+  <% } %>
+</div>
+
+<!-- Optional: Simple List -->
+<ul class="mt-4">
+  <% allListings.forEach(listing => { %>
+    <li><a href="/listings/<%= listing._id %>"><%= listing.title || 'Untitled Listing' %></a></li>
+  <% }) %>
+</ul>
