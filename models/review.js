@@ -5,13 +5,17 @@ const reviewSchema = new Schema({
     rating: {
         type: Number,
         min: 1,
-        max: 5
+        max: 5,
+        required: true
     },
-    comment: String,
-
+    comment: {
+        type: String,
+        required: true
+    },
     author: {
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true
     }
 });
 

@@ -1,54 +1,57 @@
 const express = require("express");
 const router = express.Router();
-
+const multer = require("multer");
+ 
 const wrapAsync = require("../utils/wrapAsync.js");
-const ExpressError = require("../utils/ExpressError.js");
-const { listingSchema } = require("../schema.js");
-const Listing = require("../models/listing.js");
-
-// IMPORT ALL MIDDLEWARE (VERY IMPORTANT)
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
-
 const listingController = require("../controllers/listings.js");
 
+// Multer config for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Folder where files will be saved
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); // Rename file to avoid conflicts
+  }
+});
 
-// HOME + CREATE ROUTES
-router.route("/")
-  .get(wrapAsync(listingController.index))
-  .post(
-    isLoggedIn,
-    validateListing,
-    wrapAsync(listingController.createListing)
-  );
+const upload = multer({ storage });
 
+// ====================== ROUTES ======================
 
-// SHOW + UPDATE + DELETE ROUTES
-router.route("/:id")
-  .get(wrapAsync(listingController.showListing))
-  .put(
-    isLoggedIn,
-    isOwner,
-    validateListing,
-    wrapAsync(listingController.updateListing)
-  )
-  .delete(
-    isLoggedIn,
-    isOwner,
-    wrapAsync(listingController.destroyListing)
-  );
+// All listings
+router.get("/", wrapAsync(listingController.index));
 
-
-// NEW FORM
+// New listing form
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
-
-// EDIT FORM
-router.get(
-  "/:id/edit",
+// Create listing with image upload
+router.post(
+  "/",
   isLoggedIn,
-  isOwner,
-  wrapAsync(listingController.renderEditForm)
+  upload.single("listing[image]"), // This will handle single image upload
+  validateListing,
+  wrapAsync(listingController.createListing)
 );
 
+// Show a single listing
+router.get("/:id", wrapAsync(listingController.showListing));
+
+// Edit listing form
+router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.renderEditForm));
+
+// Update listing
+router.put(
+  "/:id",
+  isLoggedIn,
+  isOwner,
+  upload.single("listing[image]"), // Update image if needed
+  validateListing,
+  wrapAsync(listingController.updateListing)
+);
+
+// Delete listing
+router.delete("/:id", isLoggedIn, isOwner, wrapAsync(listingController.destroyListing));
 
 module.exports = router;

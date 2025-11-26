@@ -12,6 +12,8 @@
           value="<%= listing.title %>"
           type="text"
           class="form-control"
+          enctype="multipart/form-data"
+
           placeholder="Enter title"
         />
       </div>
@@ -27,11 +29,11 @@
       </div>
 
       <div class="mb-3">
-        <label for="image" class="form-label">Image Link</label>
+        <label for="image" class="form-label">Upload  Image</label>
         <input
           name="listing[image]"
-          value="<%= listing.image %>"
-          type="text"
+         
+          type="file"
           class="form-control"
           placeholder="Enter image URL/link"
         />

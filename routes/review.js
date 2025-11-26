@@ -3,19 +3,21 @@ const router = express.Router({ mergeParams: true });
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { reviewSchema } = require("../schema.js");
-const Review = require("../models/review.js");
-const Listing = require("../models/listing.js");
+const reviewController = require("../controllers/reviews.js");
 const { isLoggedIn } = require("../middleware.js");
 
-const reviewController = require("../controllers/reviews.js");
-
-// Validation
+// Middleware to validate review
 const validateReview = (req, res, next) => {
+  // Convert rating to number before validation
+  if (req.body.review && req.body.review.rating) {
+    req.body.review.rating = Number(req.body.review.rating);
+  }
+
   const { error } = reviewSchema.validate(req.body);
   if (error) {
-    const errMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, errMsg);
-  }
+    const errMsg = error.details.map(el => el.message).join(",");
+    throw new ExpressError(errMsg, 400);
+  } 
   next();
 };
 
@@ -24,7 +26,7 @@ router.post(
   "/",
   isLoggedIn,
   validateReview,
-  wrapAsync( reviewController.createReview)
+  wrapAsync(reviewController.createReview)
 );
 
 // Delete Review
@@ -35,3 +37,4 @@ router.delete(
 );
 
 module.exports = router;
+

@@ -20,12 +20,13 @@
           <div class="card h-100 shadow-sm border-0 listing-card">
 
             <!-- Image -->
-            <img 
-              src="<%= listing.image && listing.image.url ? listing.image.url : 'https://via.placeholder.com/400x300?text=No+Image' %>" 
-              class="card-img-top"
-              alt="listing_image"
-              style="height: 20rem; object-fit: cover; border-top-left-radius: 10px; border-top-right-radius: 10px;"
-            >
+           <img 
+  src="<%= listing.image && listing.image.url ? listing.image.url : '/images/placeholder.png' %>" 
+  class="card-img-top"
+  alt="listing_image"
+  style="height: 20rem; object-fit: cover; border-top-left-radius: 10px; border-top-right-radius: 10px;"
+>
+
 
             <!-- Card Body -->
             <div class="card-body">

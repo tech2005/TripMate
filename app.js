@@ -1,4 +1,12 @@
 // Importing required modules
+if(process.env.Node_ENV !="production") {
+  require('dotenv').config();
+}
+
+
+console.log(process.env.SECRET);
+
+
 console.log("Server started, check routes...");
 
 process.removeAllListeners('warning');

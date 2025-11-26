@@ -1,12 +1,11 @@
 <% layout('layouts/boilerplate') %>
 
-
 <div class="row">
   <div class="col-8 offset-2">
     <br><br>
     <h3>Create a New Listing</h3>
 
-    <form method="POST" action="/listings" novalidate class="needs-validation">
+    <form method="POST" action="/listings" enctype="multipart/form-data" novalidate class="needs-validation">
 
       <!-- Title -->
       <div class="mb-3">
@@ -18,9 +17,7 @@
           class="form-control"
           required
         />
-       
       </div>
-      
 
       <!-- Description -->
       <div class="mb-3">
@@ -35,11 +32,10 @@
 
       <!-- Image -->
       <div class="mb-3">
-        <label for="image" class="form-label">Image Link</label>
+        <label for="image" class="form-label">Upload Image</label>
         <input
           name="listing[image]"
-          placeholder="Enter image URL"
-          type="text"
+          type="file"
           class="form-control"
           required
         />
@@ -51,9 +47,9 @@
           <label for="price" class="form-label">Price</label>
           <input
             name="listing[price]"
-            placeholder="Enter price"
             type="number"
             class="form-control"
+            placeholder="Enter price"
             required
           />
         </div>
@@ -62,9 +58,9 @@
           <label for="country" class="form-label">Country</label>
           <input
             name="listing[country]"
-            placeholder="Enter country"
             type="text"
             class="form-control"
+            placeholder="Enter country"
             required
           />
         </div>
@@ -75,9 +71,9 @@
         <label for="location" class="form-label">Location</label>
         <input
           name="listing[location]"
-          placeholder="Enter location"
           type="text"
           class="form-control"
+          placeholder="Enter location"
           required
         />
       </div>
