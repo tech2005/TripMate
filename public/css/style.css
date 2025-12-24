@@ -95,3 +95,18 @@ body{
 .add-btn{
     background-color:  rgb(18, 151, 151);
 }
+
+/* style.css mein sabse niche add karein */
+#map {
+    z-index: 1; /* Navbar dropdown ke piche na jaye */
+}
+
+@media (max-width: 768px) {
+    #map {
+        height: 300px !important;
+    }
+    .col-8.offset-2 {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
