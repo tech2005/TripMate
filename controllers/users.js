@@ -13,11 +13,11 @@ module.exports.signup = async (req, res, next) => {
       req.login(registeredUser, (err) => {
         if (err) return next(err);
         req.flash("success", "Welcome to Tripmate!");
-        res.redirect("/listings");
+        return res.redirect("/listings");
       });
     } catch (err) {
       req.flash("error", err.message);
-      res.redirect("/signup");
+      return res.redirect("/signup");
     }
 };
 
@@ -26,14 +26,15 @@ module.exports.renderLoginForm = (req, res) => {
 };
 
 module.exports.login = async (req, res) => {
-    req.flash("success", "Welcome back!");
-    res.redirect("/listings");
+    req.flash("success", "Welcome to Tripmate!");
+    let redirectUrl = res.locals.redirectUrl || "/listings";
+    return res.redirect(redirectUrl);
 };
 
 module.exports.logout = (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);
     req.flash("success", "You have logged out successfully!");
-    res.redirect("/listings");
+    return res.redirect("/listings");
   });
 };

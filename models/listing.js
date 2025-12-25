@@ -5,10 +5,10 @@ const Review = require("./review.js");
 const listingSchema = new Schema({
     title: { type: String, required: true },
     description: String,
-    image: {
-       url: String,
-       filename: String,
-    },
+   image: {
+    url: String,
+    filename: String,
+},
     price: Number,
     location: String,
     country: String,
@@ -22,21 +22,21 @@ const listingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    // --- Naya field yahan add kiya gaya hai ---
+   
     geometry: {
         type: {
             type: String, 
-            enum: ['Point'], // 'geometry.type' sirf 'Point' ho sakta hai
+            enum: ['Point'], 
             required: true
         },
         coordinates: {
-            type: [Number], // [longitude, latitude]
+            type: [Number], 
             required: true
         }
     }
 });
 
-// Delete all reviews when listing is deleted
+
 listingSchema.post("findOneAndDelete", async (listing) => {
     if (listing) {
         await Review.deleteMany({ _id: { $in: listing.reviews } });

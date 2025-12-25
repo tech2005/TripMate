@@ -4,7 +4,13 @@
     <br><br>
     <h3>Edit Your Listing</h3>
 
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
+    <form 
+      method="POST" 
+      action="/listings/<%= listing._id %>?_method=PUT" 
+      enctype="multipart/form-data"
+      class="needs-validation"
+      novalidate
+    >
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <input
@@ -12,9 +18,8 @@
           value="<%= listing.title %>"
           type="text"
           class="form-control"
-          enctype="multipart/form-data"
-
           placeholder="Enter title"
+          required
         />
       </div>
 
@@ -25,26 +30,26 @@
           class="form-control"
           rows="3"
           placeholder="Enter description"
+          required
         ><%= listing.description %></textarea>
       </div>
 
-
       <div class="mb-3">
-        <img src="<%= originalImageUrl %>"/>
+        <p>Original Listing Image:</p>
+        <img 
+          src="<%= originalImageUrl %>" 
+          class="img-thumbnail" 
+          style="height: 200px; width: 300px; object-fit: cover;"
+          alt="original image"
+        />
       </div>
-
-
-
-
 
       <div class="mb-3">
         <label for="image" class="form-label">Upload New Image</label>
         <input
           name="listing[image]"
-         
           type="file"
           class="form-control"
-          placeholder="Enter image URL/link"
         />
       </div>
 
@@ -57,6 +62,7 @@
             type="number"
             class="form-control"
             placeholder="Enter price"
+            required
           />
         </div>
 
@@ -68,6 +74,7 @@
             type="text"
             class="form-control"
             placeholder="Enter country"
+            required
           />
         </div>
       </div>
@@ -80,6 +87,7 @@
           type="text"
           class="form-control"
           placeholder="Enter location"
+          required
         />
       </div>
 
@@ -89,4 +97,3 @@
     </form>
   </div>
 </div>
-

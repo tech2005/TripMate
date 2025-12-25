@@ -10,6 +10,7 @@
     margin-right: 2rem;
     margin-top: 2rem;
     opacity: 0.7;
+    transition: 0.2s;
   }
   .filter:hover {
     opacity: 1;
@@ -18,7 +19,6 @@
   .filter p {
     font-size: 0.8rem;
   }
-
   .tax-info {
     display: none;
   }
@@ -32,6 +32,7 @@
     align-items: center;
   }
 </style>
+
 <div id="filters">
   <div class="filter">
     <div><i class="fa-solid fa-fire"></i></div>
@@ -87,28 +88,29 @@
         id="flexSwitchCheckDefault"
       />
       <label class="form-check-label" for="flexSwitchCheckDefault">
-        Display totle after taxes
+        Display total after taxes
       </label>
     </div>
   </div>
 </div>
+
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-  <% for (listing of allListings){ %>
+  <% for (let listing of allListings){ %>
   <a href="/listings/<%= listing._id %>" class="listing-link">
     <div class="card col listing-card">
-      <img
-        class="card-img-top"
-        src="<%= listing.image.url %>"
-        alt="listing image "
-        style="height: 20rem"
-      />
+     <img
+  class="card-img-top"
+  src="<%= listing.image.url %>" 
+  alt="listing image"
+  style="height: 20rem; object-fit: cover;"
+/>
 
       <div class="card-img-overlay"></div>
       <div class="card-body">
         <p class="card-text">
-          <b> <%= listing.title %></b>
+          <b><%= listing.title %></b>
           <br />
-          &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+          &#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") : "Price N/A" %> / night
           <i class="tax-info">&nbsp; &nbsp; +18% GST</i>
         </p>
       </div>
@@ -116,11 +118,12 @@
   </a>
   <% } %>
 </div>
+
 <script>
   let taxSwitch = document.getElementById("flexSwitchCheckDefault");
   taxSwitch.addEventListener("click", () => {
     let taxInfo = document.getElementsByClassName("tax-info");
-    for (info of taxInfo) {
+    for (let info of taxInfo) {
       if (info.style.display != "inline") {
         info.style.display = "inline";
       } else {

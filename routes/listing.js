@@ -1,24 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
- 
+const { storage } = require("../cloudConfig.js"); // Cloudinary storage import
+const upload = multer({ storage }); // Multer ko Cloudinary connect kiya
+
 const wrapAsync = require("../utils/wrapAsync.js");
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
-
-// Multer config for file upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Folder where files will be saved
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname); // Rename file to avoid conflicts
-  }
-});
-
-const upload = multer({ storage });
-
-// ====================== ROUTES ======================
 
 // All listings
 router.get("/", wrapAsync(listingController.index));
@@ -26,27 +14,27 @@ router.get("/", wrapAsync(listingController.index));
 // New listing form
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
-// Create listing with image upload
+// Create listing (Cloudinary Upload)
 router.post(
   "/",
   isLoggedIn,
-  upload.single("listing[image]"), // This will handle single image upload
+  upload.single("listing[image]"), // Image ko Cloudinary bhejna
   validateListing,
   wrapAsync(listingController.createListing)
 );
 
-// Show a single listing
+// Show listing
 router.get("/:id", wrapAsync(listingController.showListing));
 
-// Edit listing form
+// Edit form
 router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.renderEditForm));
 
-// Update listing
+// Update listing (Cloudinary Upload)
 router.put(
   "/:id",
   isLoggedIn,
   isOwner,
-  upload.single("listing[image]"), // Update image if needed
+  upload.single("listing[image]"),
   validateListing,
   wrapAsync(listingController.updateListing)
 );

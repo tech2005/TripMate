@@ -1,9 +1,7 @@
-// ================= ENV SETUP =================
 if (process.env.NODE_ENV !== "production") {
-    require("dotenv").config();
+  require("dotenv").config();
 }
 
-// ================= IMPORTS =================
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -23,34 +21,12 @@ const userRouter = require("./routes/user.js");
 const ExpressError = require("./utils/ExpressError.js");
 
 const app = express();
+const dbURL = process.env.ATLASDB_URL;
 
-// --- SABSE PEHLE VARIABLE DEFINE KAREIN ---
-const dbUrl = process.env.ATLASDB_URL; 
+mongoose.connect(dbURL)
+  .then(() => console.log("MongoDB Atlas Connected"))
+  .catch((err) => console.log("MongoDB connection error:", err));
 
-// --- PHIR STORE CREATE KAREIN ---
-const store = MongoStore.create({
-  mongoUrl: dbUrl, 
-  crypto: {
-    secret: process.env.SECRET || "mysupersecretcode",
-  },
-  touchAfter: 24 * 3600,
-});
-
-store.on("error", (err) => {
-    console.log("ERROR IN MONGO SESSION STORE", err);
-});
-
-// ================= DATABASE CONNECTION =================
-mongoose
-  .connect(dbUrl)
-  .then(() => {
-    console.log("MongoDB Atlas Connected");
-  })
-  .catch((err) => {
-    console.log("MongoDB connection error:", err.message);
-  });
-
-// ================= BAAKI KA CODE WAHI RAHNE DEIN =================
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -61,8 +37,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 const sessionOptions = {
-  store,
-  secret: process.env.SECRET || "fallbacksecret",
+  store: MongoStore.create({ mongoUrl: dbURL, touchAfter: 24 * 3600 }),
+  secret: process.env.SECRET || "mysupersecretcode",
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -77,15 +53,14 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;
+  res.locals.success = req.flash("success") || [];
+  res.locals.error = req.flash("error") || [];
+  res.locals.currUser = req.user || null;
   next();
 });
 
@@ -93,7 +68,7 @@ app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
-app.use((req, res, next) => {
+app.all(/(.*)/, (req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));
 });
 
@@ -103,6 +78,4 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = 8080;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
